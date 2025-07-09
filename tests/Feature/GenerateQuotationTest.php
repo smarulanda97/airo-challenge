@@ -35,6 +35,16 @@ class GenerateQuotationTest extends TestCase
     }
 
     #[Test]
+    public function quotation_can_be_generated_with_authentication_token(): void
+    {
+        $this
+            ->withBearerToken()
+            ->json('POST', route('api.v1.quotation.store'), $this->quotationFixture)
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertSuccessful();
+    }
+
+    #[Test]
     #[DataProvider('invalidQuotationPayloadProvider')]
     public function quotation_returns_validation_error_when_data_is_missing(string $attribute, mixed $value): void
     {
