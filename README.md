@@ -1,61 +1,55 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Airo coding challenge
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This repository contains the code I wrote for the technical challenge from Airo.
 
-## About Laravel
+Some parts of the project may look a bit over-engineered because I wanted to show my understanding 
+of software architecture and separation of concerns. Other parts are simple because I had limited time to finish the challenge.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The app is organized in the following layers:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- `Controllers`: Receive HTTP requests and validate them with the help of the `FormRequests`, and move the data to the `Service` layer.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- `Services`: Contain the main application/business logic, to keep controllers clean and easy to read.
 
-## Learning Laravel
+- `Repositories`: It's not an implementation of the Repository pattern. It's another layer to separate the database 
+  access from the services. They are optional/useless in this challenge, but I added them to show separation of concerns.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Another additional directories have been created:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- `Dtos`: Instead of sending the raw Request object or just an array from the `Controller`
+  to the `Service`, I used a DTO (Data Transfer Object) to pass the data in a more
+  strongly typed and organized way.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- `Enums`: Helpers for predefined sets of options, making the code cleaner and easier to read.
 
-## Laravel Sponsors
+## Tests
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+A few Feature and Unit tests were added to verify the correctness of the API endpoints and the business logic. These tests cover both successful and error cases.
 
-### Premium Partners
+## Notes
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- The app uses localStorage to store the JWT token. While this is fine for small apps or demos, in production, 
+  HttpOnly cookies are preferred to avoid XSS vulnerabilities.
 
-## Contributing
+- The project was completed in under 5 hours, so some trade-offs were made between speed and full structure.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Project setup
 
-## Code of Conduct
+Note: To run this project `Docker`, and `Docker compose` must be installed in the host machine.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. Clone the repository: `git clone git@github.com:smarulanda97/airo-challenge.git`.
+2. Move to the project directory: `cd airo-challenge`.
+3. Copy the .env.example file: `cp .env.example .env`.
+4. Buid and create the containers: `docker compose up -d laravel.test mysql`.
+5. Run composer install: `docker compose exec -it laravel.test composer install`.
+6. Run the migrations, and seed the database: `docker compose exec -it laravel.test php artisan migrate:fresh --seed`.
+7. Access the coding challenge page: `http://localhost`. You can log in using the following user (seeded automatically):
+   - **Email:** test@example.com
+   - **Password:** 123456
 
-## Security Vulnerabilities
+## Tech stack
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- PHP 8.4 (Laravel 12)
+- MySQL
+- Docker + Docker Compose
+- Alpine.js + Blade + Axios/Fetch (no frontend framework)
