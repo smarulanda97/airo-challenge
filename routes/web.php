@@ -2,6 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::redirect('/', '/login');
+Route::view('/login', 'login')->name('web.login');
+Route::view('/quotation', 'quotation')->name('web.quotation');

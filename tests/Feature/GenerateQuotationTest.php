@@ -65,16 +65,23 @@ class GenerateQuotationTest extends TestCase
     public function quotation_happy_path_returns_successful_response(): void
     {
         $user = User::factory()->create();
+        $payload = $this->quotationFixture;
 
-        $this
+        $response = $this
             ->actingAs($user)
-            ->json('POST', route('api.v1.quotation.store'), $this->quotationFixture)
+            ->json('POST', route('api.v1.quotation.store'), $payload)
             ->assertSuccessful()
             ->assertJsonStructure([
                 'total',
                 'currency_id',
                 'quotation_id',
             ]);
+
+        $data = $response->json();
+
+        $this->assertEquals($payload['currency_id'], $data['currency_id']);
+        $this->assertNotEmpty($data['quotation_id']);
+        $this->assertGreaterThan(0, $data['quotation_id']);
     }
 
     public static function invalidQuotationPayloadProvider(): array
